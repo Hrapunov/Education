@@ -8,9 +8,9 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 public class mainPage {
-    public static SelenideElement newsTape = $(By.xpath("//*[@id=\"tab-item-0\"]/span[1]"));
-    public static SelenideElement post = $(By.xpath("//*[@id=\"hook_Block_PostingFormDropdown\"]/posting-form-dropdown/div/button/span[2]"));
-    public static SelenideElement searchField = $(By.xpath("//*[@id=\"toolbar_search\"]/toolbar-search/form/div/label/input"));
+    public static SelenideElement newsTape = $(By.xpath("//div[@class='tico null']"));
+    public static SelenideElement post = $(By.xpath("//button[@class='dropdown-button__qx55h']"));
+    public static SelenideElement searchField = $(By.xpath("//input[@name='st.query']"));
 
     public void getNewsTape(String text) {
         newsTape.shouldHave(text(text));

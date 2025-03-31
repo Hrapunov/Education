@@ -3,6 +3,7 @@ package homework;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 
 import static com.codeborne.selenide.Selenide.*;
 
@@ -11,9 +12,8 @@ import static com.codeborne.selenide.Selenide.*;
 public class firstTests {
     authenticationPage loginPage = new authenticationPage();
     mainPage mainPage = new mainPage();
-    private final String username = "d1ng0x@mail.ru";
-    private final String password = "d1ng011";
-    //fake account
+    private final String username = "technopol62";
+    private final String password = "technopolisPassword";
 
     @AfterEach
     public void after(){
@@ -33,6 +33,7 @@ public class firstTests {
     public void registrationButtonOnPage(){
         authenticationPage.getRegistrationButton("Зарегистрироваться");
     }
+
     @Test
     public void postTest(){
         authenticationPage.login(username, password);
@@ -42,6 +43,6 @@ public class firstTests {
     public void lookingOnSite(){
         authenticationPage.login(username, password);
         mainPage.search("what");
-        $("//*[@id=\"hook_Block_SearchMRB\"]/portal-search/div[2]/div[1]/div[1]/div/div[1]/button/span/span[1]");
+        $(By.xpath("//div[@class='island_cnt__pyx2y island-content__zdst2']"));
     }
 }

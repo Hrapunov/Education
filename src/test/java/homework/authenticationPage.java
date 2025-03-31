@@ -8,7 +8,7 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 
 public class authenticationPage {
-    public static SelenideElement registrationButton = $(".button-pro.__sec.mb-3x.__wide");
+    public static SelenideElement registrationButton = $(By.xpath("//a[@class='button-pro __sec mb-3x __wide']"));
     public static SelenideElement usernameField = $("#field_email");
     public static SelenideElement passwordField = $("#field_password");
     public static SelenideElement loginButton = $(By.xpath("//input[@value='Войти в Одноклассники']"));
