@@ -12,8 +12,10 @@ public class authenticationPage {
     public static SelenideElement usernameField = $("#field_email");
     public static SelenideElement passwordField = $("#field_password");
     public static SelenideElement loginButton = $(By.xpath("//input[@value='Войти в Одноклассники']"));
+    public static SelenideElement enterWithQR = $(By.xpath("//a[@class='button-pro __wide qr-code-button mt-2x js-login-nav js-login-qrCode']"));
+    public static SelenideElement QrButton = $(By.xpath("//a[@class='filter_i js-login-nav js-login-qrCode']"));
 
-    public void authOpen(){
+    public void authOpen() {
         open("https://ok.ru/");
     }
 
@@ -22,7 +24,8 @@ public class authenticationPage {
         passwordField.setValue(password);
         loginButton.click();
     }
-    public static void getRegistrationButton(String text){
+
+    public static void getRegistrationButton(String text) {
         registrationButton.shouldBe(visible).shouldHave(text(text));
     }
 }

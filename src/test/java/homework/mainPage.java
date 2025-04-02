@@ -12,6 +12,7 @@ public class mainPage {
     public static SelenideElement post = $(By.xpath("//button[@class='dropdown-button__qx55h']"));
     public static SelenideElement searchField = $(By.xpath("//input[@name='st.query']"));
 
+
     public void getNewsTape(String text) {
         newsTape.shouldHave(text(text));
     }
@@ -22,6 +23,7 @@ public class mainPage {
     public void search(String text){
         searchField.setValue(text).pressEnter();
     }
+
 }
 
 
