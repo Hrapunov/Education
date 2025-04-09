@@ -7,4 +7,4 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectPackages("homework")
 @IncludeTags("mainPage")
-public class mainPageSuite {}
+public class MainPageSuite {}

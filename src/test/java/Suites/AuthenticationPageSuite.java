@@ -7,4 +7,4 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectPackages("homework")
 @IncludeTags("authenticationPage")
-public class authenticationPageSuite {}
+public class AuthenticationPageSuite {}
