@@ -12,9 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class FirstTests {
-    private final String username = "technopol62";
-    private final String password = "technopolisPassword";
-
+    private MainPage mainPage;
     @AfterEach
     public void after() {
         closeWindow();
@@ -23,7 +21,7 @@ public class FirstTests {
     @BeforeEach
     @Timeout(10)
     public void before() {
-        new AuthenticationPage().authOpen();
+        AuthenticationPage.authOpen();
     }
 
         @Nested
@@ -32,9 +30,9 @@ public class FirstTests {
             @Tag("authenticationPage")
             @DisplayName("Заход на главную страницу")
             public void loginToMain() {
-                AuthenticationPage.login(username, password);
+                mainPage = AuthenticationPage.login();
                 assertTrue(
-                        new MainPage().getNewsTape().shouldBe(visible.because("Кнопка ленты не отображается")).innerText().matches("Лента")
+                        mainPage.getNewsTape().shouldBe(visible.because("Кнопка ленты не отображается")).innerText().matches("Лента")
                 );
             }
 
@@ -59,21 +57,22 @@ public class FirstTests {
 
             @BeforeEach
             public void beforeMainPage(){
-                AuthenticationPage.login(username, password);
+                AuthenticationPage.authOpen();
+                mainPage = AuthenticationPage.login();
             }
 
             @Test
             @Tag("mainPage")
             public void postTest() {
                 assertTrue(
-                        new MainPage().getPost().shouldBe(visible.because("Кнопка Опубликовать не отображается")).innerText().matches("Опубликовать")
+                        mainPage.getPost().shouldBe(visible.because("Кнопка Опубликовать не отображается")).innerText().matches("Опубликовать")
                 );
             }
 
             @Test
             @Tag("mainPage")
             public void lookingOnSite() {
-                new MainPage().setSearchField("Something");
+                mainPage.setSearchField("Something");
                 MainPage.getBestMatches().shouldBe(visible.because("Остров с подходящими результатами не отображается"));
             }
 
@@ -81,10 +80,19 @@ public class FirstTests {
             @ValueSource(strings = {"1", "111111111111111111111111111111111111"})
             @Tag("mainPage")
             public void searchLengthTest(String length) {
-                new MainPage().setSearchField(length);
+                mainPage.setSearchField(length);
                 assertTrue(
-                MainPage.getFindCount().shouldBe(visible.because("Остров с подходящими результатами не отображается")).innerText().startsWith("Найдено")
+                MainPage.getFindCount().shouldBe(visible.because("Остров с подходящими результатами не отображается"))
+                        .innerText().startsWith("Найдено")
                 );
+            }
+
+            @Test
+            @Tag("mainPage")
+            public void selectionPopup(){
+                mainPage.clickPost()
+                        .popupPublicClick()
+                        .getPostingForm().shouldBe(visible.because("Форма для поста не отобразилась"));
             }
         }
     @Disabled
