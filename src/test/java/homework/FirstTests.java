@@ -1,103 +1,104 @@
 package homework;
 
+import Pages.AuthenticationPage;
+import Pages.MainPage;
+import TestsSetups.AuthenticationTestsSetup;
+import TestsSetups.MainTestsSetup;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.*;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class FirstTests {
-    private MainPage mainPage;
-    @AfterEach
-    public void after() {
-        closeWindow();
+    private static final TestBot testBot = new TestBot("technopol62", "technopolisPassword");
+
+    @Nested
+    class AuthenticationPageTests extends AuthenticationTestsSetup {
+
+        @Test
+        @Tag("authenticationPage")
+        @DisplayName("Заход на главную страницу")
+        public void loginToMain() {
+            AuthenticationPage authenticationPage = new AuthenticationPage();
+            MainPage mainPage = authenticationPage.login(testBot.getLogin(), testBot.getPassword());
+            assertTrue(
+            mainPage.getNewsTape()
+            );
+        }
+
+
+        @Test
+        @Tag("authenticationPage")
+        @DisplayName("Текст кнопки регистрации")
+        public void registrationButtonOnPage() {
+            AuthenticationPage authenticationPage = new AuthenticationPage();
+            assertEquals("Зарегистрироваться", authenticationPage.getRegistrationButtonText());
+        }
+
+        @Test
+        @Tag("authenticationPage")
+        @DisplayName("Варианты QR")
+        public void lookingQR() {
+            AuthenticationPage authenticationPage = new AuthenticationPage();
+            assertAll(
+                    authenticationPage::getQrButton,
+                    authenticationPage::getEnterWithQR
+            );
+        }
     }
 
-    @BeforeEach
-    @Timeout(10)
-    public void before() {
-        AuthenticationPage.authOpen();
-    }
 
-        @Nested
-        class AuthenticationPageTests {
-            @Test
-            @Tag("authenticationPage")
-            @DisplayName("Заход на главную страницу")
-            public void loginToMain() {
-                mainPage = AuthenticationPage.login();
-                assertTrue(
-                        mainPage.getNewsTape().shouldBe(visible.because("Кнопка ленты не отображается")).innerText().matches("Лента")
-                );
-            }
+    @Nested
+    class MainPageTests extends MainTestsSetup {
 
-            @Test
-            @Tag("authenticationPage")
-            public void registrationButtonOnPage() {
-                AuthenticationPage.getRegistrationButton().shouldBe(visible.because("Кнопка регистрации не отображается"));
-            }
+        @Test
+        @Tag("mainPage")
+        @DisplayName("Кнопка опубликовать")
+        public void postTest() {
+            assertTrue(
+                    mainPage.getPost()
+            );
+        }
 
-            @Test
-            @Tag("authenticationPage")
-            public void lookingQR() {
-                assertAll(
-                        () -> AuthenticationPage.getQrButton().shouldBe(visible.because("Кнопка QR-код не отображается")),
-                        () -> AuthenticationPage.getEnterWithQR().shouldBe(visible.because("Кнопка Войти по QR-коду не отображается"))
+        @Test
+        @Tag("mainPage")
+        @DisplayName("Ввод в поле поиска")
+        public void lookingOnSite() {
+            mainPage.setSearchField("something");
+            assertTrue(
+                    mainPage.getBestMatches()
+            );
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"1", "111111111111111111111111111111111111"})
+        @Tag("mainPage")
+        @DisplayName("Кол-во символов в поле поиска")
+        public void searchLengthTest(String length) {
+            mainPage.setSearchField(length);
+            assertTrue(
+                    mainPage.getFindCountText().startsWith("Найдено")
+            );
+        }
+
+        @Test
+        @Tag("mainPage")
+        @DisplayName("Форма для поста")
+        public void selectionPopup() {
+            assertTrue(
+                    mainPage.clickPost()
+                            .popupPublicClick()
+                            .getPostingForm()
                 );
             }
         }
 
-        @Nested
-        class MainPageTests {
-
-            @BeforeEach
-            public void beforeMainPage(){
-                AuthenticationPage.authOpen();
-                mainPage = AuthenticationPage.login();
-            }
-
-            @Test
-            @Tag("mainPage")
-            public void postTest() {
-                assertTrue(
-                        mainPage.getPost().shouldBe(visible.because("Кнопка Опубликовать не отображается")).innerText().matches("Опубликовать")
-                );
-            }
-
-            @Test
-            @Tag("mainPage")
-            public void lookingOnSite() {
-                mainPage.setSearchField("Something");
-                MainPage.getBestMatches().shouldBe(visible.because("Остров с подходящими результатами не отображается"));
-            }
-
-            @ParameterizedTest
-            @ValueSource(strings = {"1", "111111111111111111111111111111111111"})
-            @Tag("mainPage")
-            public void searchLengthTest(String length) {
-                mainPage.setSearchField(length);
-                assertTrue(
-                MainPage.getFindCount().shouldBe(visible.because("Остров с подходящими результатами не отображается"))
-                        .innerText().startsWith("Найдено")
-                );
-            }
-
-            @Test
-            @Tag("mainPage")
-            public void selectionPopup(){
-                mainPage.clickPost()
-                        .popupPublicClick()
-                        .getPostingForm().shouldBe(visible.because("Форма для поста не отобразилась"));
-            }
+        @Disabled
+        @Test
+        void skippedTrue() {
+            assertTrue(true);
         }
-    @Disabled
-    @Test
-    void skippedTrue() {
-        assertTrue(true);
-    }
 }

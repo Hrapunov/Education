@@ -8,7 +8,7 @@ public class TestBot {
         this.password = password;
         this.login = login;
     }
-    public String getLogin() {
+    public  String getLogin() {
         return login;
     }
     public String getPassword() {
