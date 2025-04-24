@@ -6,6 +6,7 @@ import TestsSetups.AuthenticationTestsSetup;
 import TestsSetups.MainTestsSetup;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -48,6 +49,19 @@ public class FirstTests {
                     authenticationPage::getEnterWithQR
             );
         }
+
+        @ParameterizedTest
+        @MethodSource("testsBots")
+        @Tag("mainPage")
+        @DisplayName("Авторизация ботов")
+        public void botsLogin(TestBot testbot) {
+            AuthenticationPage authenticationPage = new AuthenticationPage();
+            MainPage mainPage = authenticationPage.login(testbot.getLogin(), testbot.getPassword());
+            assertTrue(
+                    mainPage.getNewsTape()
+            );
+        }
+
     }
 
 

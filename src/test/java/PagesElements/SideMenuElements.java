@@ -13,7 +13,7 @@ public class SideMenuElements {
     private static final SelenideElement popupPublic = $(By.xpath(".//a[contains(@href, '/post')]"));
     private static final SelenideElement postingForm = $(By.xpath(".//div[contains(@class, 'posting')]"));
 
-    public boolean getNewsTape() {
+  public boolean getNewsTape() {
          return newsTape.shouldBe(visible.because("Кнопка ленты не отображается")).isDisplayed();
     }
 
