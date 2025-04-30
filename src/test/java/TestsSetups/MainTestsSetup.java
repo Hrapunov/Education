@@ -9,15 +9,14 @@ import org.junit.jupiter.api.Timeout;
 import static com.codeborne.selenide.Selenide.*;
 
 public class MainTestsSetup {
-    private static final String basicUrl = "https://ok.ru/";
-    private static final TestBot testBot = new TestBot("technopol62", "technopolisPassword");
+    private static final String BASIC_URL = "https://ok.ru/";
+    private static final TestBot TEST_BOT = new TestBot("technopol62", "technopolisPassword");
     protected MainPage mainPage;
     @BeforeEach
-    @Timeout(10)
+    @Timeout(15)
     public void before() {
-        open(basicUrl);
-        AuthenticationPage authenticationPage = new AuthenticationPage();
-        mainPage = authenticationPage.login(testBot.getLogin(), testBot.getPassword());
+        open(BASIC_URL);
+        mainPage = new AuthenticationPage().login(TEST_BOT.getLogin(), TEST_BOT.getPassword());
     }
 
     @AfterEach
