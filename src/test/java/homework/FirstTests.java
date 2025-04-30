@@ -11,10 +11,19 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 
 public class FirstTests {
-    private static final TestBot testBot = new TestBot("technopol62", "technopolisPassword");
+    private static final TestBot TEST_BOT = new TestBot("technopol62", "technopolisPassword");
+    private static final String SET_SEARCH_FIELD_TEXT = "something";
+    private static final String FIND_COUNT_TEXT = "Найдено";
+    private static final String SYMBOL_NUMBER = "1";
+    private static final String SYMBOLS_NUMBERS = "111111111111111111111111111111111111";
+    private static final String REGISTRATION_BUTTON_TEXT = "Зарегистрироваться";
+    private static final String REGISTRATION_BUTTON_FIRST_LETTER = "З";
+    private static final String REGISTRATION_BUTTON_CONTAINS_TEXT = "арегистрироваться";
+
 
     @Nested
     class AuthenticationPageTests extends AuthenticationTestsSetup {
@@ -23,10 +32,10 @@ public class FirstTests {
         @Tag("authenticationPage")
         @DisplayName("Заход на главную страницу")
         public void loginToMain() {
-            AuthenticationPage authenticationPage = new AuthenticationPage();
-            MainPage mainPage = authenticationPage.login(testBot.getLogin(), testBot.getPassword());
+            MainPage mainPage = new AuthenticationPage().login(TEST_BOT.getLogin(), TEST_BOT.getPassword());
             assertTrue(
-            mainPage.getNewsTape()
+            mainPage.getSideMenu().isNewsTapeVisible(),
+                    "Не отображается боковое меню с кнопкой ленты"
             );
         }
 
@@ -35,8 +44,15 @@ public class FirstTests {
         @Tag("authenticationPage")
         @DisplayName("Текст кнопки регистрации")
         public void registrationButtonOnPage() {
-            AuthenticationPage authenticationPage = new AuthenticationPage();
-            assertEquals("Зарегистрироваться", authenticationPage.getRegistrationButtonText());
+            assertThat(new AuthenticationPage().getRegistrationButtonText())
+                    .as("Текст кнопки регистрации")
+                    .withFailMessage("Текст кнопки должен быть 'Зарегистрироваться'")
+                    .isEqualTo(REGISTRATION_BUTTON_TEXT)
+                    .withFailMessage("Текст должен начинаться с 'З'")
+                    .startsWith(REGISTRATION_BUTTON_FIRST_LETTER)
+                    .withFailMessage("Текст должен содержать 'арегистрироваться'")
+                    .contains(REGISTRATION_BUTTON_CONTAINS_TEXT);
+
         }
 
         @Test
@@ -45,20 +61,20 @@ public class FirstTests {
         public void lookingQR() {
             AuthenticationPage authenticationPage = new AuthenticationPage();
             assertAll(
-                    authenticationPage::getQrButton,
-                    authenticationPage::getEnterWithQR
+                    () -> assertTrue(authenticationPage.isQrButtonVisible(), "Нет кнопки QR"),
+                    () -> assertTrue(authenticationPage.isEnterWithQrVisible(), "Нет кнопки войти по QR")
             );
         }
 
         @ParameterizedTest
-        @MethodSource("testsBots")
+        @MethodSource("testsBotsStream")
         @Tag("mainPage")
         @DisplayName("Авторизация ботов")
         public void botsLogin(TestBot testbot) {
-            AuthenticationPage authenticationPage = new AuthenticationPage();
-            MainPage mainPage = authenticationPage.login(testbot.getLogin(), testbot.getPassword());
+            MainPage mainPage = new AuthenticationPage().login(testbot.getLogin(), testbot.getPassword());
             assertTrue(
-                    mainPage.getNewsTape()
+                    mainPage.getSideMenu().isNewsTapeVisible(),
+                    "Не отображается боковое меню с кнопкой ленты"
             );
         }
 
@@ -73,7 +89,8 @@ public class FirstTests {
         @DisplayName("Кнопка опубликовать")
         public void postTest() {
             assertTrue(
-                    mainPage.getPost()
+                    mainPage.getSideMenu().isPostVisible(),
+                    "Кнопка опубликовать не отобразилась"
             );
         }
 
@@ -81,20 +98,22 @@ public class FirstTests {
         @Tag("mainPage")
         @DisplayName("Ввод в поле поиска")
         public void lookingOnSite() {
-            mainPage.setSearchField("something");
+            mainPage.setSearchField(SET_SEARCH_FIELD_TEXT);
             assertTrue(
-                    mainPage.getBestMatches()
+                    mainPage.isBestMatchesVisible(),
+                    "Блок с лучшими совпадениями не отобразился"
             );
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"1", "111111111111111111111111111111111111"})
+        @ValueSource(strings = {SYMBOL_NUMBER, SYMBOLS_NUMBERS})
         @Tag("mainPage")
         @DisplayName("Кол-во символов в поле поиска")
         public void searchLengthTest(String length) {
             mainPage.setSearchField(length);
             assertTrue(
-                    mainPage.getFindCountText().startsWith("Найдено")
+                    mainPage.getFindCountText().startsWith(FIND_COUNT_TEXT),
+                    "Текст поля не соответствует"
             );
         }
 
@@ -103,9 +122,11 @@ public class FirstTests {
         @DisplayName("Форма для поста")
         public void selectionPopup() {
             assertTrue(
-                    mainPage.clickPost()
+                    mainPage.getSideMenu().clickPost()
+                            .getPopUp()
                             .popupPublicClick()
-                            .getPostingForm()
+                            .isPostingFormVisible(),
+                    "Шаблон поста не отобразился"
                 );
             }
         }

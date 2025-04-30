@@ -9,14 +9,14 @@ import static com.codeborne.selenide.Selenide.open;
 import java.util.stream.Stream;
 
 public class AuthenticationTestsSetup{
-    private static final String basicUrl = "https://ok.ru/";
-    private static final TestBot testBot = new TestBot("technopol62", "technopolisPassword");
-    private static final TestBot testBot1 = new TestBot("technopol70", "technopolisPassword");
-    private static final TestBot testBot2 = new TestBot("technopol71", "technopolisPassword");
+    private static final String BASIC_URL = "https://ok.ru/";
+    private static final TestBot TEST_BOT = new TestBot("technopol62", "technopolisPassword");
+    private static final TestBot TEST_BOT1 = new TestBot("technopol70", "technopolisPassword");
+    private static final TestBot TEST_BOT2 = new TestBot("technopol71", "technopolisPassword");
     @BeforeEach
-    @Timeout(10)
+    @Timeout(15)
     public void before() {
-        open(basicUrl);
+        open(BASIC_URL);
     }
 
     @AfterEach
@@ -25,11 +25,11 @@ public class AuthenticationTestsSetup{
     }
 
 
-    private static Stream<Object> testsBots() {
+    private static Stream<Object> testsBotsStream() {
         return Stream.of(
-                testBot,
-                testBot1,
-                testBot2
+                TEST_BOT,
+                TEST_BOT1,
+                TEST_BOT2
         );
     }
 }
